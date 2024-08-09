@@ -1,6 +1,6 @@
 spring:
   application:
-    name : Dividen
+    name : Dividend
 
   h2:
     console:

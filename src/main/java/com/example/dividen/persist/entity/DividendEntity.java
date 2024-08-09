@@ -1,5 +1,6 @@
 package com.example.dividen.persist.entity;
 
+import com.example.dividen.model.DividendInfo;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity(name = "DIVIDEND")
@@ -26,6 +26,9 @@ public class DividendEntity {
 
     private String dividend;
 
-
-
+    public DividendEntity(Long companyId, DividendInfo dividendInfo) {
+        this.companyId = companyId;
+        this.date = dividendInfo.getDate();
+        this.dividend = dividendInfo.getDividend();
+    }
 }
