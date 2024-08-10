@@ -1,0 +1,37 @@
+### GET request to companyController
+GET http://localhost:8080/company
+
+### GET request to ecompanyController with pageableInfo
+GET http://localhost:8080/company?size=1
+
+### GET request to ecompanyController with pageableInfo
+GET http://localhost:8080/finance/dividend/3M Company
+
+### Send POST request to CompanyController
+POST http://localhost:8080/company
+Content-Type: application/json
+
+{
+  "ticker": "O"
+}
+
+### Send POST request to CompanyController
+POST http://localhost:8080/company
+Content-Type: application/json
+
+{
+  "ticker": "MMM"
+}
+
+### Send POST request to CompanyController
+POST http://localhost:8080/company
+Content-Type: application/json
+
+{
+  "ticker": "O"
+}
+
+### GET request to example server
+GET http://localhost:8080/finance/COKE
+
+

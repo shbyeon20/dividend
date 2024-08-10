@@ -8,8 +8,9 @@ import com.example.dividen.persist.entity.CompanyEntity;
 import com.example.dividen.persist.entity.DividendEntity;
 import com.example.dividen.scraper.YahooFinanceScraper;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
@@ -31,8 +32,6 @@ public class CompanyService {
         return this.storeCompanyAndDividend(ticker);
     }
 
-
-
     private Company storeCompanyAndDividend(String ticker) {
         // ticker을 기준으로 회사를 scraping
         Company company = yahooFinanceScraper.scrapCompanyByTicker(ticker);
@@ -48,7 +47,7 @@ public class CompanyService {
         // 성공시에 repository에 저장후 company entity를 반환해줌
         CompanyEntity companyEntity = companyRepository.save(new CompanyEntity(company));
         List<DividendEntity> dividendEntities
-                = scrapedResult.getDividendes().stream().map(dividendInfo
+                = scrapedResult.getDividends().stream().map(dividendInfo
                         -> new DividendEntity(companyEntity.getId(), dividendInfo))
                 .collect(Collectors.toList());
 
@@ -58,4 +57,7 @@ public class CompanyService {
 
     }
 
+    public Page<CompanyEntity> getAllCompany(Pageable pageable) {
+        return companyRepository.findAll(pageable);
+    }
 }

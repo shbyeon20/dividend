@@ -11,9 +11,9 @@ import java.util.List;
 public class ScrapedResult {
     private Company company;
 
-    private List<DividendInfo> dividendes;
+    private List<DividendInfo> dividends;
 
     public ScrapedResult() {
-        this.dividendes = new ArrayList<>();
+        this.dividends = new ArrayList<>();
     }
 }

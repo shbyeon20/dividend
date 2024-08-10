@@ -64,7 +64,7 @@ public class YahooFinanceScraper implements Scraper {
                             .build());
                 }
             }
-            scrapedResult.setDividendes(dividendInfos);
+            scrapedResult.setDividends(dividendInfos);
 
         } catch (
                 IOException e) {
