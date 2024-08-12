@@ -20,7 +20,9 @@ public class CompanyController {
 
     @GetMapping("/autocompelete")
     public ResponseEntity<?> autoComplete(@RequestParam String keyword) {
-        return null;
+
+
+        return ResponseEntity.ok(companyService.autocompleteKeyword(keyword));
     }
 
     @GetMapping
@@ -30,14 +32,15 @@ public class CompanyController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addCompany(@RequestBody Company company){
-        String ticker = company.getTicker();
+    public ResponseEntity<?> addCompany(@RequestBody Company request){
+        String ticker = request.getTicker();
         if(ObjectUtils.isEmpty(ticker)){
             throw new RuntimeException("ticker is empty");
         }
-        Company save = this.companyService.save(ticker);
+        Company company = this.companyService.save(ticker);
+        this.companyService.autocompleteKeyword(company.getName());
 
-        return ResponseEntity.ok(save);
+        return ResponseEntity.ok(company);
     }
 
     @DeleteMapping
