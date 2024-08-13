@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+
 public interface CompanyRepository extends JpaRepository<CompanyEntity,Long> {
     boolean existsByTicker(String ticker);
 
