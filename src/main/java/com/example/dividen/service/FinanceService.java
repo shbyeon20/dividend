@@ -8,6 +8,8 @@ import com.example.dividen.persist.DividendRepository;
 import com.example.dividen.persist.entity.CompanyEntity;
 import com.example.dividen.persist.entity.DividendEntity;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,15 +17,17 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class FinanceService {
     private final CompanyRepository companyRepository;
     private final DividendRepository dividendRepository;
 
 
-    public ScrapedResult getDividendByName(String companyName) {
+    @Cacheable(key = "#companyName", value = "finance")
+    public ScrapedResult getDividendByCompanyName(String companyName) {
+        log.info("search company -> "+ companyName);
 
         //1. 회사명으로 회사정보를 조회함
-
         CompanyEntity companyEntity = companyRepository.findByName(companyName).orElseThrow(() -> new RuntimeException("CompanyName " + "not found ->" + companyName));
 
 

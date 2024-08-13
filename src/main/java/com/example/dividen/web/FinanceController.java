@@ -16,9 +16,9 @@ public class FinanceController {
     private final FinanceService financeService;
 
 
-    @GetMapping("/dividend/{companyname}")
-    public ResponseEntity<?> searchFinance(@PathVariable String companyname) {
+    @GetMapping("/dividend/{companyName}")
+    public ResponseEntity<?> searchFinance(@PathVariable String companyName) {
 
-        return ResponseEntity.ok(financeService.getDividendByName(companyname));
+        return ResponseEntity.ok(financeService.getDividendByCompanyName(companyName));
     }
 }
