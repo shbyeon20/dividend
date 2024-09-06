@@ -20,10 +20,10 @@ import java.time.Duration;
 @RequiredArgsConstructor
 @Configuration
 public class CacheConfig {
-    @Value("${spring.redis.host}")
+    @Value("${spring.data.redis.host}")
     private String host;
 
-    @Value("${spring.redis.port}")
+    @Value("${spring.data.redis.port}")
     private String port;
 
     @Bean // redis와 connection을 맺는 bean을 생성

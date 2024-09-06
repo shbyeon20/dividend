@@ -1,34 +1,42 @@
 package com.example.dividen.model;
 
-import jakarta.persistence.*;
+import com.example.dividen.persist.entity.MemberEntity;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @ToString
 @AllArgsConstructor
-@Entity(name = "MEMBER")
 @NoArgsConstructor
-public class MemberEntity implements UserDetails {
+@Builder
+public class MemberDetails implements UserDetails {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String username;
     private String password;
-
-    @ElementCollection
     private List<String> roles;
 
 
+    public static MemberDetails fromEntity(MemberEntity memberEntity) {
+        return MemberDetails.builder()
+                .id(memberEntity.getId())
+                .username(memberEntity.getUsername())
+                .password(memberEntity.getPassword())
+                .roles(memberEntity.getRoles())
+                .build();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -51,3 +59,5 @@ public class MemberEntity implements UserDetails {
         return false;
     }
 }
+
+
