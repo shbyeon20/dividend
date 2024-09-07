@@ -24,13 +24,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public static final String TOKEN_HEADER = "Authorization"; // Http header
     public static final String TOKEN_PREFIX = "Bearer "; // jwt Token에 처음붙음
 
-    private final TokenProvider tokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = resolveTokenFromRequest(request);
 
-        if(StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
+        if(StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
+            jwtTokenProvider.getAuthentication()
 
         }
     }

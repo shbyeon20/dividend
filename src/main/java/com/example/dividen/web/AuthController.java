@@ -2,8 +2,6 @@ package com.example.dividen.web;
 
 
 import com.example.dividen.model.Auth;
-import com.example.dividen.model.MemberDetails;
-import com.example.dividen.security.TokenProvider;
 import com.example.dividen.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,9 +27,6 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<?> signup(@RequestBody Auth.SignInRequest request) {
 
-        return ResponseEntity.ok(memberService.authenticate(request));
-
+        return ResponseEntity.ok(memberService.JwtAuthenticate(request));
     }
-
-
 }

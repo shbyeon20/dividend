@@ -4,7 +4,7 @@ import com.example.dividen.model.Auth;
 import com.example.dividen.model.MemberDetails;
 import com.example.dividen.persist.MemberRepository;
 import com.example.dividen.persist.entity.MemberEntity;
-import com.example.dividen.security.TokenProvider;
+import com.example.dividen.security.JwtTokenProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +20,7 @@ public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenProvider tokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
 
     // Id가 signIn 시도되었을때 그에 맞는 entity를 찾고 details를 불러옴
@@ -45,8 +45,8 @@ public class MemberService implements UserDetailsService {
     }
 
 
-    // credential의 유효성을 검증하고 유효하다면 토큰을 발행
-    public String authenticate(Auth.SignInRequest member) {
+    // Dao의 credential의 유효성을 검증하고 유효하다면 토큰을 발행
+    public String DaoAuthenticate(Auth.SignInRequest member) {
         MemberEntity memberEntity = memberRepository.findByUsername(member.getUserName()).orElseThrow(()
                 -> new UsernameNotFoundException("could not find user -> " + member.getUserName()));
 
@@ -54,7 +54,7 @@ public class MemberService implements UserDetailsService {
             throw new RuntimeException("비밀번호가 일치하지 않습니다");
         }
 
-        return tokenProvider.generateToken(memberEntity.getUsername(),
+        return jwtTokenProvider.generateToken(memberEntity.getUsername(),
                 memberEntity.getRoles());
     }
 }
