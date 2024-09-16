@@ -20,7 +20,6 @@ public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
 
 
     // Id가 signIn 시도되었을때 그에 맞는 entity를 찾고 details를 불러옴
@@ -46,7 +45,7 @@ public class MemberService implements UserDetailsService {
 
 
     // Dao의 credential의 유효성을 검증하고 유효하다면 토큰을 발행
-    public String DaoAuthenticate(Auth.SignInRequest member) {
+    public MemberEntity authenticate(Auth.SignInRequest member) {
         MemberEntity memberEntity = memberRepository.findByUsername(member.getUserName()).orElseThrow(()
                 -> new UsernameNotFoundException("could not find user -> " + member.getUserName()));
 
@@ -54,7 +53,6 @@ public class MemberService implements UserDetailsService {
             throw new RuntimeException("비밀번호가 일치하지 않습니다");
         }
 
-        return jwtTokenProvider.generateToken(memberEntity.getUsername(),
-                memberEntity.getRoles());
+        return memberEntity;
     }
 }

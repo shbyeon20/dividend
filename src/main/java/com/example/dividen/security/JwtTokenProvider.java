@@ -1,6 +1,5 @@
 package com.example.dividen.security;
 
-import com.example.dividen.model.MemberDetails;
 import com.example.dividen.service.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -8,7 +7,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -23,9 +24,7 @@ import java.util.List;
 public class JwtTokenProvider {
     private static final String KEY_ROLES = "roles";
     private static final Long TIME_TOKEN_EXPIRE_TIME = 1000 * 60 * 60L;//1hour
-
     private final MemberService memberService;
-
     @Value("${spring.jwt.secret}")
     private String secretKey;
 
@@ -49,31 +48,45 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // 토큰이 비어있는지 혹은 토큰이 유효기간에 부합하는지 확인
-    public boolean validateToken(String token) {
-        if(!StringUtils.hasText(token)) return false;
-
-        Claims claims = this.parseClaims(token);
-        return claims.getExpiration().before(new Date());
-    }
 
     public String getUsernameFromToken(String token) {
-        Claims claims = this.parseClaims(token);
+        Claims claims = this.parseClaimsFromToken(token);
         return claims.getSubject();
     }
 
-    private Claims parseClaims(String token) {
+
+    private Claims parseClaimsFromToken(String token) {
+
+        SecretKey key = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS512.getJcaName());
+
+
         try {
-            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+            return Jwts.parserBuilder().setSigningKey(key).build()
+                    .parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
     }
 
-    public Authentication getAuthentication(String jwt) {
-        memberService.loadUserByUsername(this.getUsername())
+
+    // 토큰이 비어있는지 혹은 토큰이 유효기간에 부합하는지 확인
+    public boolean validateToken(String token) {
+        if(!StringUtils.hasText(token)) return false;
+
+        Claims claims = this.parseClaimsFromToken(token);
+        return !claims.getExpiration().before(new Date());
+    }
+
+
+    // spring context에 담을 Authentication을 생성함
+    public Authentication getJwtAuthentication(String jwt) {
+        UserDetails userDetails =
+                memberService.loadUserByUsername(this.getUsernameFromToken(jwt));
+        return new UsernamePasswordAuthenticationToken(userDetails,"",
+                userDetails.getAuthorities());
 
     }
+
 }
 
 
